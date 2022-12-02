@@ -1,5 +1,6 @@
 package com.axis.groceryShopBackend.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.axis.groceryShopBackend.entity.Category;
@@ -13,13 +14,12 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class CategoryService {
+public class CatServiceImpl implements CatService{
 
-	private final CategoryRepo categoryrepository;
+	@Autowired
+	private  CategoryRepo categoryrepository;
 
-	public CategoryService(CategoryRepo categoryrepository) {
-		this.categoryrepository = categoryrepository;
-	}
+	
 
 	public List<Category> listCategories() {
 		return categoryrepository.findAll();
@@ -41,7 +41,7 @@ public class CategoryService {
 		Category category = categoryrepository.findById(categoryID).get();
 		category.setCategoryName(newCategory.getCategoryName());
 		category.setDescription(newCategory.getDescription());
-		//category.setProducts(newCategory.getProducts());
+		category.setProducts(newCategory.getProducts());
 		category.setImageUrl(newCategory.getImageUrl());
 
 		categoryrepository.save(category);

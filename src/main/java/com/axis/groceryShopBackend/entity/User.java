@@ -2,7 +2,7 @@ package com.axis.groceryShopBackend.entity;
 
 
 
-import jakarta.annotation.Generated;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;

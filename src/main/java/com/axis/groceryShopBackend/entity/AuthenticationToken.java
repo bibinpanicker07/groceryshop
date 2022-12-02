@@ -1,45 +1,34 @@
 package com.axis.groceryShopBackend.entity;
-
 import java.util.Date;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.UUID;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
-public class Cart {
+public class AuthenticationToken {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private String token;
 
     private Date createdDate;
 
-    @ManyToOne
-    private Product product;
-
-    @JsonIgnore
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
-
-    private int quantity;
-
-    public Cart() {
-    }
-
-    public Cart(Product product, int quantity, User user){
+    public AuthenticationToken(User user) {
         this.user = user;
-        this.product = product;
-        this.quantity = quantity;
         this.createdDate = new Date();
+        this.token = UUID.randomUUID().toString();
     }
 
     public Integer getId() {
@@ -50,12 +39,12 @@ public class Cart {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public String getToken() {
+        return token;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setToken(String Token) {
+        this.token = Token;
     }
 
     public Date getCreatedDate() {
@@ -66,20 +55,21 @@ public class Cart {
         this.createdDate = createdDate;
     }
 
-    public Product getProduct() {
-        return product;
+    public User getUser() {
+        return user;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public AuthenticationToken(Integer id, String Token, Date createdDate, User user) {
+        this.id = id;
+        this.token = Token;
+        this.createdDate = createdDate;
+        this.user = user;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public AuthenticationToken() {
     }
 }
-

@@ -1,6 +1,7 @@
 package com.axis.groceryShopBackend.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -14,17 +15,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-
 import com.axis.groceryShopBackend.entity.Category;
-import com.axis.groceryShopBackend.service.CategoryService;
+import com.axis.groceryShopBackend.service.CatService;
+
+
+
 
 @RestController
 @RequestMapping("/category")
 public class CategoryController {
 	
 	@Autowired 
-	CategoryService categoryService;
+	CatService categoryService;
 	
 	@GetMapping("/")
     public ResponseEntity<List<Category>> getCategories() {
@@ -39,8 +41,11 @@ public class CategoryController {
 	
 	@PostMapping("/create")
 	public ResponseEntity<String> createCategory(@RequestBody Category category) {
+		Optional<Category> categoryOpt = Optional.ofNullable((categoryService.readCategory(category.getCategoryName())));
+		if(!categoryOpt.isPresent())
+			return new ResponseEntity<String>("category already exists", HttpStatus.CONFLICT);
 		categoryService.createCategory(category);
-		return new ResponseEntity<String>("Category Addeed Successfully",HttpStatus.OK);
+		return new ResponseEntity<String>("Category Created Successfully",HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{categoryName}")
@@ -52,14 +57,12 @@ public class CategoryController {
 	
 	@PostMapping("/update/{categoryID}")
 	public ResponseEntity<String> updateCategory(@PathVariable("categoryID") Integer categoryID, @Valid @RequestBody Category category) {
-		// Check to see if the category exists.
-		if (categoryID==category.getId()) {
-			// If the category exists then update it.
+		
+		Optional<Category> categoryOpt = categoryService.readCategory(categoryID);
+		if(categoryOpt.isPresent()) {
 			categoryService.updateCategory(categoryID, category);
-			return new ResponseEntity<String>("Category updated successfully", HttpStatus.OK);
+			return new ResponseEntity<String>("updated the category", HttpStatus.OK);
 		}
-
-		// If the category doesn't exist then return a response of unsuccessful.
 		return new ResponseEntity<String>("category does not exist", HttpStatus.NOT_FOUND);
 	}
 	
